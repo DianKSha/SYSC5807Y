@@ -153,7 +153,7 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
 uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     // same as plaintext
     associatedDataLength = *(data);
-    free(assocatedData);
+    free(associatedData);
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
     associatedDataCounter=0;
     return 0x00;
