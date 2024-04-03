@@ -22,6 +22,7 @@
 
 #include "simpleserial.h"
 
+
 uint8_t get_key(uint8_t* k, uint8_t len)
 {
 	// Load key here
@@ -33,6 +34,9 @@ uint8_t get_pt(uint8_t* pt, uint8_t len)
 	/**********************************
 	* Start user-specific code here. */
 	trigger_high();
+
+    // trigger high to start capture 
+    
 
 	//16 hex bytes held in 'pt' were sent
 	//from the computer. Store your response
