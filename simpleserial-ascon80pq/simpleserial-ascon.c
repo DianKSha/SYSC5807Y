@@ -29,6 +29,7 @@
 #include "permutations.h"
 #include "printstate.h"
 #include "word.h"
+#include "aead.c"
 
 #define NONCE_BYTES 16
 #define KEY_BYTES 20
