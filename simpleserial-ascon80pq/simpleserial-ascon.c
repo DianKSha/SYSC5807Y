@@ -125,7 +125,7 @@ uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
     free(ciphertext);
     ciphertext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
 
-    ciphertextConuter= 0;
+    ciphertextCounter= 0;
     // also set the plaintext
     
     if(plaintext!=NULL) free(plaintext);
