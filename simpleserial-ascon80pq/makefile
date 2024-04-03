@@ -30,11 +30,11 @@
 
 # Target file name (without extension).
 # This is the name of the compiled .hex file.
-TARGET = simpleserial-base
+TARGET = simpleserial-ascon
 
 # List C source files here.
 # Header files (.h) are automatically pulled in.
-SRC += simpleserial-base.c
+SRC += simpleserial-ascon.c
 
 # -----------------------------------------------------------------------------
 
