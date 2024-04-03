@@ -56,6 +56,7 @@ static int associatedDataCounter = 0; //
 
 static unsigned char nonce[NONCE_BYTES] = {0};
 
+unsigned char * new_ciphertext(uint32_t len);
 uint8_t  set_key(uint8_t* k, uint8_t len)
 {
 	// Load key here
