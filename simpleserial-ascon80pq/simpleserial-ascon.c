@@ -33,15 +33,15 @@
 #define NONCE_BYTES 16
 #define KEY_BYTES 20
 
-static dataLength = 16; // since the p and ad can be arbitrary long, set the data length first, defualt 16 
+static int dataLength = 16; // since the p and ad can be arbitrary long, set the data length first, defualt 16 
 
 static unsigned char key[ KEY_BYTES] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}; // 20 bytes key for ascon 80pq
 
-static unsigned char* associatedData = (unsigned char*)malloc(16*sizeof(unsigned char));
+static unsigned char* associatedData;// moved to main = (unsigned char*)malloc(16*sizeof(unsigned char));
 
-static unsigned char* plaintext = (unsigned char*)malloc(16*sizeof(unsigned char));
+static unsigned char* plaintext;// moved to main = (unsigned char*)malloc(16*sizeof(unsigned char));
 
-static unsigned char* ciphertext = (unsigned char*)malloc((16+16)*sizeof(unsigned char)); // size(plaintext) + size(nonce)
+static unsigned char* ciphertext;//  = (unsigned char*)malloc((16+16)*sizeof(unsigned char)); // size(plaintext) + size(nonce)
 
 
 static uint32_t ciphertextLength = 16; // default 16 bytes
@@ -50,9 +50,9 @@ static uint32_t plaintextLength = 16; // default 16 bytes
 static int ciphertextCounter= 0;
 static int plaintextCounter = 0;
 
-static uint32_t associateDataLength = 16; // default 16 bytes
+static uint32_t associatedDataLength = 16; // default 16 bytes
 
-static int associatedDatatCounter = 0; // 
+static int associatedDataCounter = 0; // 
 
 static unsigned char nonce[NONCE_BYTES] = {0};
 
@@ -150,7 +150,7 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
     return   0x00; 
 }
 
-uint8_t set_associate_data_length(uint8_t * data, uint8_t len){
+uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     // same as plaintext
     associatedDataLength = *(data);
     free(assocatedData);
@@ -159,7 +159,7 @@ uint8_t set_associate_data_length(uint8_t * data, uint8_t len){
     return 0x00;
 }
 
-unsigned char * new_ciphertext(int len){
+unsigned char* new_ciphertext( uint32_t len){
     return (unsigned char*)malloc(len*sizeof(unsigned char));
 }
 void free_cipher_text(unsigned char * ciphertext){
@@ -167,13 +167,13 @@ void free_cipher_text(unsigned char * ciphertext){
 }
 
 void encrypt(){
-    int clen;
+    unsigned long long clen;
     crypto_aead_encrypt(ciphertext, &clen, plaintext, plaintextLength, associatedData, associatedDataLength, (void*)0, nonce, key);
 }
 
 int decrypt(){
     
-    int plen;
+    unsigned long long plen;
     return 
     crypto_aead_decrypt(plaintext, &plen, (void*)0, ciphertext, ciphertextLength+NONCE_BYTES, associatedData, associatedDataLength,nonce, key);
 
@@ -222,6 +222,12 @@ int main(void)
     platform_init();
 	init_uart();
 	trigger_setup();
+    associatedData = (unsigned char*)malloc(16*sizeof(unsigned char));
+
+    plaintext = (unsigned char*)malloc(16*sizeof(unsigned char));
+
+    ciphertext = (unsigned char*)malloc((16+16)*sizeof(unsigned char)); // size(plaintext) + size(nonce)
+
 
  	/* Uncomment this to get a HELLO message for debug */
 	/*
