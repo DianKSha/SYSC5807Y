@@ -31,7 +31,7 @@
 #include "word.h"
 
 #define NONCE_BYTES 16
-#define KEY_BTYES 20
+#define KEY_BYTES 20
 
 static dataLength = 16; // since the p and ad can be arbitrary long, set the data length first, defualt 16 
 
