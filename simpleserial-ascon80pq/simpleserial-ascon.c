@@ -100,9 +100,8 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
 
     plaintextLength = 0;
     for(int i = 0; i<4; i++){
-        plaintextLength += 256 * plaintextLength + *(data+i);
+        plaintextLength = 256 * plaintextLength + *(data+i);
     }
-    plaintextLength = *(data);
     free(plaintext);
     plaintext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
     plaintextCounter = 0;
@@ -174,9 +173,9 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
 uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     // same as plaintext
     associatedDataLength =  0 ;
-    for(int i = 0; i>4; i++){
+    for(int i = 0; i<4; i++){
         
-        associatedDataLength += 256*associatedDataLength + *(data+i);
+        associatedDataLength = 256*associatedDataLength + *(data+i);
     }
     free(associatedData);
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
