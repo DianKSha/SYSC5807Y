@@ -23,7 +23,7 @@ nonce = bytearray([1]*16)#bytes 32
 target.simpleserial_write('b', associatedDataLengthBytes)
 print(target.simpleserial_read('r',4))
 
-for t in range(math.ceil(associatedDatalength/16)):
+for t in range(math.ceil(associatedDataLength/16)):
 
     target.simpleserial_write('a',associatedData)
     print(target.simpleserial_read('r',  16))
@@ -38,7 +38,7 @@ target.simpleserial_write('q',plaintextLengthBytes)
 print(target.simpleserial_read('r',4))
 for i in range(repetitionNum):
     target.simpleserial_write('p',plaintext)
-    print(target.simpleserial_read('r',  16)
+    print(target.simpleserial_read('r',  16))
 
 res_ciphertext = ''
 for i in range(repetitionNum):
