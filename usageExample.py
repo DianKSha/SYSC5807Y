@@ -59,7 +59,7 @@ ciphertext = bytearray(res_ciphertext, 'ascii')
 
 target.simpleserial_write('b', associatedDataLengthBytes)
 print(target.simpleserial_read('r',  4))
-for t in range(math.ceil(associatedDatalength/16)):
+for t in range(math.ceil(associatedDataLength/16)):
     target.simpleserial_write('a',associatedData)
     print(target.simpleserial_read('r',  16))
 
