@@ -51,7 +51,7 @@ for i in range(repetitionNum):
 res_ciphertext = ''
 for i in range(repetitionNum):
     target.simpleserial_write('e', bytearray())
-    temp = target.simpleserial_read('r',16)
+    temp = (str)target.simpleserial_read('r',16)
     print(temp)
     res_ciphertext += temp
 
@@ -88,7 +88,7 @@ for i in range(repetitionNum):
 res_plaintext = ''
 for i in range(repetitionNum):
     target.simpleserial_write('d', bytearray())
-    temp = target.simpleserial_read('r',16)
+    temp = (str)target.simpleserial_read('r',16)
     print(temp)
     
     res_plaintext+= temp
