@@ -3,21 +3,21 @@ import math
 
 key = bytearray([0]*20) # 20 bytes
 
-plaintext = bytearray([1]*16) #  16 bytes of palintext
-plaintextLengthBytes = bytearray([0,0,0,16])  # 16 byte
-plaintextLength = 16 # bytes
+plaintext = bytearray([1,2]*13) #  16 bytes of palintext
+plaintextLengthBytes = bytearray([0,0,0,26])  # 16 byte
+plaintextLength = 26 # bytes
 repetitionNum = math.ceil(plaintextLength/16)
 
-associatedData = bytearray([6]*16)
-associatedDataLengthBytes =  bytearray([0,0,0,16]) # four bytes
-associatedDataLength = 16
+associatedData = bytearray([1,2,3]*12)
+associatedDataLengthBytes =  bytearray([0,0,0,36]) # four bytes
+associatedDataLength = 36
 
 ciphertext = None
-ciphertextLength = 16
-ciphertextLengthBytes = bytearray([0,0,0,16])
+ciphertextLength = plaintextLength
+ciphertextLengthBytes = plaintextLengthBytes
 
 
-nonce = bytearray([1]*16)#bytes 32
+nonce = bytearray([7]*16)#bytes 16
 # to encrypt
 
 target.simpleserial_write('b', associatedDataLengthBytes)
