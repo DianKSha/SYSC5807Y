@@ -85,8 +85,16 @@ uint8_t set_plaintext(uint8_t * data, uint8_t len){
     if(plaintextCounter == (plaintextLength+15)/16)
         return 0; // error, trying to read data when no data should be available
     // read 16 bytes for a time
-    for(int i = 0; i<16; i++){
-        plaintext[i+plaintextCounter*16] = *(data+i);
+    int restBytes = plaintextLength - 16*plaintextCounter;
+    if(restBytes>=16){
+        for(int i = 0; i<16; i++){
+            plaintext[i+plaintextCounter*16] = *(data+i);
+        }
+    }else{
+        for(int i = 0; i<restBytes; i++){
+
+            plaintext[i+plaintextCounter*16] = *(data+i);
+        }
     }
 
     simpleserial_put('r', 16, (void*)plaintext+16*plaintextCounter);
@@ -122,8 +130,17 @@ uint8_t set_ciphertext(uint8_t * data, uint8_t len){
     if(ciphertextCounter == (ciphertextCounter+15)/16)
         return -1; // error, trying to read data when no data should be available
     // read 16 bytes for a time
-    for(int i = 0; i<16; i++){
-        ciphertext[i+ciphertextCounter*16] = *(data+i);
+    int restBytes = ciphertextLength  - 16*ciphertextCounter;
+    if(restBytes>=16){
+
+        for(int i = 0; i<16; i++){
+            ciphertext[i+ciphertextCounter*16] = *(data+i);
+        }
+    }else{
+        for(int i = 0; i<restBytes; i++){
+
+            ciphertext[i+ciphertextCounter*16] = *(data+i);
+        }
     }
     simpleserial_put('r',16,(void*)ciphertext+ciphertextCounter*16);
     ciphertextCounter++;
@@ -162,8 +179,15 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
     if(associatedDataCounter== (associatedDataLength+15)/16)
         return -1; // error, trying to read data when no data should be available
     // read bytes, 16 a time
-    for(int i = 0; i<16; i++){
-        associatedData[i+associatedDataCounter*16] = *(data+i);
+    int restBytes = associatedDataLength-16*associatedDataCounter;
+    if (restBytes>=16){
+        for(int i = 0; i<16; i++){
+            associatedData[i+associatedDataCounter*16] = *(data+i);
+        }
+    }else{
+        for(int i = 0; i<restBytes; i++){
+            associatedData[i+associatedDataCounter*16] = *(data+i);
+        }
     }
     simpleserial_put('r',16, (uint8_t*)associatedData+16*associatedDataCounter);
     associatedDataCounter++;

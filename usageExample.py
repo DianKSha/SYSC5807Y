@@ -1,14 +1,22 @@
 
 import math
 
+
+def padByteArray(arr):
+    # append 0 to arr to make it a multiple of sixteen
+    if len(arr%16) == 0:
+        return 
+    arr += bytearray([0])*(16-len(arr)%16)
+
+
 key = bytearray([0]*20) # 20 bytes
 
-plaintext = bytearray([1,2]*13) #  16 bytes of palintext
+plaintext =padByteArray( bytearray([1,2]*13)) #  16 bytes of palintext
 plaintextLengthBytes = bytearray([0,0,0,26])  # 16 byte
 plaintextLength = 26 # bytes
 repetitionNum = math.ceil(plaintextLength/16)
 
-associatedData = bytearray([1,2,3]*12)
+associatedData = PadByteArray(bytearray([1,2,3]*12))
 associatedDataLengthBytes =  bytearray([0,0,0,36]) # four bytes
 associatedDataLength = 36
 
@@ -25,7 +33,7 @@ print(target.simpleserial_read('r',4))
 
 for t in range(math.ceil(associatedDataLength/16)):
 
-    target.simpleserial_write('a',associatedData)
+    target.simpleserial_write('a',associatedData[t*16: (t+1)*16])
     print(target.simpleserial_read('r',  16))
 target.simpleserial_write('n', nonce)
 print(target.simpleserial_read('r',  16))
@@ -52,7 +60,9 @@ for i in range(repetitionNum):
 # change ciphertext
 # should be available before 
 
-ciphertext = bytearray(res_ciphertext, 'ascii')
+
+
+ciphertext = PadByteArray(bytearray(res_ciphertext, 'ascii'))
 # ============= 
 # to decrypt
 
