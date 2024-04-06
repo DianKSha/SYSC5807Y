@@ -46,12 +46,12 @@ static unsigned char* ciphertext;//  = (unsigned char*)malloc((16+16)*sizeof(uns
 
 
 static uint32_t ciphertextLength = 16; // default 16 bits
-static uint32_t plaintextLength = 16; // default 16     bits  
+static uint32_t plaintextLength = 16; // default 16     bytes
                                            //
 static int ciphertextCounter= 0;
 static int plaintextCounter = 0;
 
-static uint32_t associatedDataLength = 16; // default 16 bits
+static uint32_t associatedDataLength = 16; // default 16 bytes
 
 static int associatedDataCounter = 0; // 
 
@@ -92,6 +92,10 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
     // set the plaintext length, defualt 16
     // this clears the existing array of plaintext and redeclare one
 
+    plaintextLength = 0;
+    for(int i = 0; i<4; i++){
+        plaintextLength += 256 * plaintextLength + *(data+i);
+    }
     plaintextLength = *(data);
     free(plaintext);
     plaintext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
@@ -123,7 +127,10 @@ uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
     // set the plaintext length, defualt 16
     // this clears the existing array of plaintext and redeclare one
 
-    ciphertextLength= *(data);
+    ciphertextLength = 0;
+    for(int i = 0; i<4; i++){
+        ciphertextLength = 16*ciphertextLength + *(data+i);
+    }
     free(ciphertext);
     ciphertext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
 
@@ -154,7 +161,11 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
 
 uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     // same as plaintext
-    associatedDataLength = *(data);
+    associatedDataLength =  0 ;
+    for(int i = 0; i>4; i++){
+        
+        associatedDataLength += 256*associatedDataLength + *(data+i);
+    }
     free(associatedData);
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
     associatedDataCounter=0;
@@ -195,7 +206,7 @@ uint8_t get_encryption(uint8_t* data, uint8_t len)
 
 	/* End user-specific code here. *
 	********************************/
-	simpleserial_put('r', 16, ciphertext+ciphertextCounter*16);
+	simpleserial_put('r', 16, (uint8_t*)ciphertext+ciphertextCounter*16);
 	return 0x00;
 }
 uint8_t get_decryption(uint8_t* data, uint8_t len){
