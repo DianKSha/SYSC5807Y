@@ -64,7 +64,10 @@ uint8_t  set_key(uint8_t* k, uint8_t len)
     for (int i = 0; i<KEY_BYTES; i++){
         key[i] = *(k+i);
     }
-	return 0x00;
+    
+    
+    simpleserial_put('r', 4 ,k);
+    return 0x00;
 }
 uint8_t set_nonce(uint8_t* data, uint8_t len)
 {
@@ -72,6 +75,7 @@ uint8_t set_nonce(uint8_t* data, uint8_t len)
     for (int i = 0; i<NONCE_BYTES; i++){
         nonce[i] = *( data+i);
     }
+    simpleserial_put('r',4,data);
 	return 0x00;
 }
 
@@ -84,6 +88,8 @@ uint8_t set_plaintext(uint8_t * data, uint8_t len){
     for(int i = 0; i<16; i++){
         plaintext[i+plaintextCounter*16] = *(data+i);
     }
+
+    simpleserial_put('r', 16, plaintext+16*plaintextCounter);
     plaintextCounter++;
     return   0x00; 
 }
@@ -107,6 +113,7 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
     ciphertextLength = plaintextLength;
     ciphertextCounter =   -1;
 
+    simpleserial_put('r',4,(void*)&ciphertextCounter);
     return 0x00;
 }
 
@@ -119,7 +126,10 @@ uint8_t set_ciphertext(uint8_t * data, uint8_t len){
     for(int i = 0; i<16; i++){
         ciphertext[i+ciphertextCounter*16] = *(data+i);
     }
+    simpleserial_put('r',16,ciphertext+ciphertextCounter*16);
     ciphertextCounter++;
+
+
     return   0x00; 
 }
 
@@ -141,6 +151,7 @@ uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
     plaintextLength = ciphertextLength - NONCE_BYTES;
     plaintext = (unsigned char*)malloc(plaintextLength * sizeof(unsigned char));
     plaintextCounter = -1;
+    simpleserial_put('r', 4, (void*)&plaintextCounter);
 
     return 0x00;
 }
@@ -155,6 +166,7 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
     for(int i = 0; i<16; i++){
         associatedData[i+associatedDataCounter*16] = *(data+i);
     }
+    simpleserial_put('r',16, associatedData+16*associatedDataCounter);
     associatedDataCounter++;
     return   0x00; 
 }
@@ -169,6 +181,8 @@ uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     free(associatedData);
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
     associatedDataCounter=0;
+
+    simpleserial_put('r', 4, (void*)&associatedDataCounter);
     return 0x00;
 }
 
