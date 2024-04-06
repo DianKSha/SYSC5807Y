@@ -66,7 +66,7 @@ uint8_t  set_key(uint8_t* k, uint8_t len)
     }
     
     
-    simpleserial_put('r',  20 ,k);
+    simpleserial_put('r',  20 ,key);
     return 0x00;
 }
 uint8_t set_nonce(uint8_t* data, uint8_t len)
@@ -75,7 +75,7 @@ uint8_t set_nonce(uint8_t* data, uint8_t len)
     for (int i = 0; i<NONCE_BYTES; i++){
         nonce[i] = *( data+i);
     }
-    simpleserial_put('r', 16,data);
+    simpleserial_put('r', 16, nonce);
 	return 0x00;
 }
 
@@ -83,13 +83,13 @@ uint8_t set_plaintext(uint8_t * data, uint8_t len){
     // set the plaintext 
     
     if(plaintextCounter == (plaintextLength+15)/16)
-        return -1; // error, trying to read data when no data should be available
+        return 0; // error, trying to read data when no data should be available
     // read 16 bytes for a time
     for(int i = 0; i<16; i++){
         plaintext[i+plaintextCounter*16] = *(data+i);
     }
 
-    simpleserial_put('r', 16, plaintext+16*plaintextCounter);
+    simpleserial_put('r', 16, (void*)plaintext+16*plaintextCounter);
     plaintextCounter++;
     return   0x00; 
 }
@@ -113,7 +113,7 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
     ciphertextLength = plaintextLength;
     ciphertextCounter =   -1;
 
-    simpleserial_put('r',4,(void*)&ciphertextCounter);
+    simpleserial_put('r',4,(void*)&plaintextLength);
     return 0x00;
 }
 
@@ -126,7 +126,7 @@ uint8_t set_ciphertext(uint8_t * data, uint8_t len){
     for(int i = 0; i<16; i++){
         ciphertext[i+ciphertextCounter*16] = *(data+i);
     }
-    simpleserial_put('r',16,ciphertext+ciphertextCounter*16);
+    simpleserial_put('r',16,(void*)ciphertext+ciphertextCounter*16);
     ciphertextCounter++;
 
 
@@ -151,7 +151,7 @@ uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
     plaintextLength = ciphertextLength - NONCE_BYTES;
     plaintext = (unsigned char*)malloc(plaintextLength * sizeof(unsigned char));
     plaintextCounter = -1;
-    simpleserial_put('r', 4, (void*)&plaintextCounter);
+    simpleserial_put('r', 4, (void*)&ciphertextLength);
 
     return 0x00;
 }
@@ -166,7 +166,7 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
     for(int i = 0; i<16; i++){
         associatedData[i+associatedDataCounter*16] = *(data+i);
     }
-    simpleserial_put('r',16, associatedData+16*associatedDataCounter);
+    simpleserial_put('r',16, (uint8_t*)associatedData+16*associatedDataCounter);
     associatedDataCounter++;
     return   0x00; 
 }
@@ -182,7 +182,7 @@ uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
     associatedDataCounter=0;
 
-    simpleserial_put('r', 4, (void*)&associatedDataCounter);
+    simpleserial_put('r', 4, (void*)&associatedDataLength);
     return 0x00;
 }
 
@@ -232,7 +232,7 @@ uint8_t get_decryption(uint8_t* data, uint8_t len){
         trigger_low();
     }
     plaintextCounter = (plaintextCounter+1)%((plaintextLength+15)/16);
-    simpleserial_put('r', 16, plaintext+plaintextCounter*16);
+    simpleserial_put('r', 16, (uint8_t*)plaintext+plaintextCounter*16);
     return 0x00;
 
 }
