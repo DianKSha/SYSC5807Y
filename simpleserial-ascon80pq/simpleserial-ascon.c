@@ -66,7 +66,7 @@ uint8_t  set_key(uint8_t* k, uint8_t len)
     }
     
     
-    simpleserial_put('r', 4 ,k);
+    simpleserial_put('r',  20 ,k);
     return 0x00;
 }
 uint8_t set_nonce(uint8_t* data, uint8_t len)
@@ -75,7 +75,7 @@ uint8_t set_nonce(uint8_t* data, uint8_t len)
     for (int i = 0; i<NONCE_BYTES; i++){
         nonce[i] = *( data+i);
     }
-    simpleserial_put('r',4,data);
+    simpleserial_put('r', 16,data);
 	return 0x00;
 }
 
