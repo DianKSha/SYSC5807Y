@@ -45,13 +45,13 @@ static unsigned char* plaintext;// moved to main = (unsigned char*)malloc(16*siz
 static unsigned char* ciphertext;//  = (unsigned char*)malloc((16+16)*sizeof(unsigned char)); // size(plaintext) + size(nonce)
 
 
-static uint32_t ciphertextLength = 16; // default 16 bytes
-static uint32_t plaintextLength = 16; // default 16 bytes
+static uint32_t ciphertextLength = 16; // default 16 bits
+static uint32_t plaintextLength = 16; // default 16     bits  
                                            //
 static int ciphertextCounter= 0;
 static int plaintextCounter = 0;
 
-static uint32_t associatedDataLength = 16; // default 16 bytes
+static uint32_t associatedDataLength = 16; // default 16 bits
 
 static int associatedDataCounter = 0; // 
 
@@ -258,14 +258,14 @@ int main(void)
 	simpleserial_addcmd('x', 0, reset); // reset
 	simpleserial_addcmd('k', 20,  set_key); // set key, 20 bytes
     simpleserial_addcmd('a', 16, set_associated_data); // set associated data
-    simpleserial_addcmd('b', 4, set_associated_data_length);
+    simpleserial_addcmd('b', 4, set_associated_data_length);// in bits
     simpleserial_addcmd('n', NONCE_BYTES, set_nonce) ;
     simpleserial_addcmd('p', 16, set_plaintext);
-    simpleserial_addcmd('q', 4, set_plaintext_length);
+    simpleserial_addcmd('q', 4, set_plaintext_length); // in bits
     simpleserial_addcmd('e', 0, get_encryption); // get the encrypted plaintext along with verification tag, 
     simpleserial_addcmd('d', 0, get_decryption); // get the decrypted plaintext
     simpleserial_addcmd('c', 16, set_ciphertext);
-    simpleserial_addcmd('l', 4, set_ciphertext_length);
+    simpleserial_addcmd('l', 4, set_ciphertext_length); // in bits
 
 	while(1)
 		simpleserial_get();
