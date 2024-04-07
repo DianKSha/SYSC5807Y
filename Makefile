@@ -1,27 +1,33 @@
-variantDirs=$(shell find variants -type d -maxdepth 1  -not  -name "variants" -print)
+outDir=out
+variantDirs=$(shell find $(outDir) -type d -maxdepth 1  -not  -name "$(outDir)" -print)
 buildBase=ascon-build-base.py
 buildFile=ascon-build.py
-dependencies=aead.c permutations.h
+testFile=ascon-test.py
+PYTHON=python3
+testResultFiles=$(addsuffix /testResult.txt, $(variantDirs))
 
-dstFiles=$(addsuffix  /$(buildFile), $(variantDirs))
+.PHONY: clean, help, print, pre, build, testall
 
 
 
-.SECONDARYEXPANSION:
-.PHONY: clean, help, print, pre
 
-default : $(dstFiles)
+testall : build, $(testResultFiles)
+	@echo "tested all $(testResultFiles)"
 
-$(dstFiles):  %/$(buildFile) : $$(wildcard $(dir $$@)) 
-	@echo $(dir $@)
-	@echo $@
-	@echo $^
-	@echo $<
 
+$(testResultFiles): %/testResult.txt : %/$(testFile)
+	$(PYTHON) %/$(testFile) >> %/teStResult.txt
+	
 pre:
-	mkdir -p  ./out
-	cp -r variants/* out/
+	mkdir -p  ./$(outDir)
+	cp -r variants/* $(outDir)
+	pip install requirements.txt
+
+build: pre
+	./build.sh
 		
+
+
 
 
 clean : 
