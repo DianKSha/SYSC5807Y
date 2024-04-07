@@ -5,8 +5,9 @@ import math
 def padByteArray(arr):
     # append 0 to arr to make it a multiple of sixteen
     if len(arr%16) == 0:
-        return 
+        return arr
     arr += bytearray([0])*(16-len(arr)%16)
+    return arr
 
 
 key = bytearray([0]*20) # 20 bytes
@@ -51,7 +52,7 @@ for i in range(repetitionNum):
 res_ciphertext = ''
 for i in range(repetitionNum):
     target.simpleserial_write('e', bytearray())
-    temp = (str)target.simpleserial_read('r',16)
+    temp = str (target.simpleserial_read('r',16))
     print(temp)
     res_ciphertext += temp
 
@@ -88,7 +89,7 @@ for i in range(repetitionNum):
 res_plaintext = ''
 for i in range(repetitionNum):
     target.simpleserial_write('d', bytearray())
-    temp = (str)target.simpleserial_read('r',16)
+    temp = str(target.simpleserial_read('r',16))
     print(temp)
     
     res_plaintext+= temp
