@@ -1,0 +1,2 @@
+
+precompute ASCON_IV
