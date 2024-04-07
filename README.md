@@ -13,7 +13,7 @@ put the changed directory into variants/ directory
 COPY THE SIMPLESERIAL FOLDER AND THEN CHANGE, COPY THE FOLDER FIRST
 
 ```
-cp simpleserial-ascon80pq variants/<VARIANT NAME>
+cp -r simpleserial-ascon80pq variants/<VARIANT NAME>
 ```
 then CHANGE, DO NOT DELETE FILES, DO NOT DELETE FILES, DO NOT DELETE FILES, 
 
