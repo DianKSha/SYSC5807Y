@@ -11,7 +11,7 @@ function help(){
 }
 
 # only do when there is BASE_DIR
-if [[ -n $BASE_DIR ]] ;
+if [[ ! -d $BASE_DIR ]] ;
 then
     echo "no $BASE_DIR "
     exit(1)
@@ -20,13 +20,13 @@ fi
 for variant in $BASE_DIR/*;
 do
     echo "find variants ..."
-    if [[! -d $variant ]];
+    if [[ ! -d $variant ]];
     then
         continue;
     fi
     # copy the base build py to each variant
-    cp ASCON_BUILD_BASE_PY $variant/$ASCON_BUILD_PY
-    cp ASCON_TEST_BASE_PY $variant/$ASCON_TEST_PY
+    cp $ASCON_BUILD_BASE_PY $variant/$ASCON_BUILD_PY
+    cp $ASCON_TEST_BASE_PY $variant/$ASCON_TEST_PY
     CURRENT_DIR=$(pwd)
     
     cd $variant
