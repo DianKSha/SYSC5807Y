@@ -110,12 +110,13 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
     for(int i = 0; i<4; i++){
         plaintextLength = 256 * plaintextLength + *(data+i);
     }
-    if (plaintext!=NULL) free(plaintext);
+    if (plaintext!=NULL){ free(plaintext); plaintext=NULL;}
     plaintext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
+    if(plaintext==NULL) return -1;
     plaintextCounter = 0;
     // also set the cipher text 
     
-    if(ciphertext!=NULL) free(ciphertext);
+    if(ciphertext!=NULL){ free(ciphertext);ciphertext=NULL;}
     ciphertext = new_ciphertext(plaintextLength);
     ciphertextLength = plaintextLength;
     ciphertextCounter =   -1;
@@ -163,9 +164,13 @@ uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
     ciphertextCounter= 0;
     // also set the plaintext
     
-    if(plaintext!=NULL) free(plaintext);
+    if(plaintext!=NULL)  {
+        free(plaintext);
+        plaintext=NULL;
+    }
     plaintextLength = ciphertextLength - NONCE_BYTES;
     plaintext = (unsigned char*)malloc(plaintextLength * sizeof(unsigned char));
+    if(plaintext==NULL){return -1;}
     plaintextCounter = -1;
     simpleserial_put('r', 4, (void*)&ciphertextLength);
 
@@ -201,10 +206,10 @@ uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
         
         associatedDataLength = 256*associatedDataLength + *(data+i);
     }
-    if(associatedData!=NULL) free(associatedData);
+    if(associatedData!=NULL) {free(associatedData);associatedData=NULL;}
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
+    if (associatedData == NULL) return -1;
     associatedDataCounter=0;
-
     simpleserial_put('r', 4, (void*)&associatedDataLength);
     return 0x00;
 }
