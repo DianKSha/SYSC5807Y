@@ -4,6 +4,7 @@ ASCON_BUILD_PY="ascon-build.py"
 ASCON_BUILD_BASE_PY="ascon-build-base.py"
 ASCON_TEST_BASE_PY="ascon-test-base.py"
 ASCON_TEST_PY="ascon-test.py"
+KAT_FILE="KAT.txt"
 BASE_DIR="out/"
 function help(){
     echo "test all variants against KAT.txt"
@@ -27,6 +28,7 @@ do
     # copy the base build py to each variant
     cp $ASCON_BUILD_BASE_PY $variant/$ASCON_BUILD_PY
     cp $ASCON_TEST_BASE_PY $variant/$ASCON_TEST_PY
+    cp $KAT_FILE $variant/$KAT_FILE
     CURRENT_DIR=$(pwd)
     
     cd $variant
