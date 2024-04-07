@@ -24,6 +24,9 @@ run `make`, there would be an `out` directory.
 The `out` contains a copy of each variant under `variants`, the test result is put in a file called `testResultFile.txt` under `out/<variant-name>`.
 
 The file contains incorrect results against KAT. A correct program should only display a line 
+
+IF there is any erro with makefile itself, most likely it's  from the  PYTHON and PIP variable, change to corresponding one on your machine. note that it's mainly for Linux system.
+
 ```
 
 =========TEST=============

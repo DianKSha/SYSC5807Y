@@ -21,7 +21,7 @@ $(testResultFiles): %/testResult.txt : %/$(testFile)
 pre:
 	mkdir -p  ./$(outDir)
 	cp -r variants/* $(outDir)
-	#$(PIP) install requirements.txt
+	$(PIP) install requirements.txt
 
 build: pre
 	$(eval variantDirs=$(shell find $(outDir) -type d -maxdepth 1  -not  -name "$(outDir)" -print))
