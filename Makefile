@@ -8,7 +8,7 @@ dstFiles=$(addsuffix  /$(buildFile), $(variantDirs))
 
 
 .SECONDARYEXPANSION:
-.PHONY: clean, help, print
+.PHONY: clean, help, print, pre
 
 default : $(dstFiles)
 
@@ -18,8 +18,14 @@ $(dstFiles):  %/$(buildFile) : $$(wildcard $(dir $$@))
 	@echo $^
 	@echo $<
 
+pre:
+	mkdir -p  ./out
+	cp -r variants/* out/
+		
+
+
 clean : 
-	echo "clean"
+	rm -rf out/
 
 print :
 	@echo "variantDirs"

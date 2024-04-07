@@ -16,7 +16,9 @@ do
     fi
     # copy the base
     cp ASCON_BUILD_BASE_PY $variant/$ASCON_BUILD_PY
-     echo "ffibuilder.set_source(\"_pi_ascon\",\"\"\"\n\t#include \"crypto_aead.h\"\n\t\"\"\",sources=[\"$variant/aead.c\"],include-dirs=[\"xxxx\"],libraries=[])" >>   $variant/$ASCON_BUILD_PY
+    echo "ffibuilder.set_source(\"_pi_ascon\",\"\"\"\n\t#include \"crypto_aead.h\"\n\t\"\"\",sources=[\"$variant/aead.c\"],include-dirs=[\"xxxx\"],libraries=[])" >>   $variant/$ASCON_BUILD_PY
+    echo "ffibuilder.compile(verbose=True)" >> $variant/$ASCON_BUILD_PY
+
 
 
 done

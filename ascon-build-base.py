@@ -14,3 +14,11 @@ int crypto_aead_decrypt(unsigned char* m, unsigned long long* mlen,
                         unsigned long long adlen, const unsigned char* npub,
                         const unsigned char* k) ;
 """)
+
+ffibuilder.set_source("_pi_ascon",
+                      """
+                      #include "crypto_aead.h"
+                      """,
+                      sources=["aead.c"],
+                      libraries=[])
+ffibuilder.compile(verbose=True)
