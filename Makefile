@@ -6,16 +6,16 @@ PYTHON=python3
 PIP=pip3
 testResultFiles=$(addsuffix /testResult.txt, $(variantDirs))
 
-.PHONY: clean, help, print, pre, build
+.PHONY: clean help    print pre build
 
 
 
-
-testall : build $(testResultFiles)
-	@echo "tested all $(testResultFiles)"
+testall : build 
+	./test.sh
 
 
 $(testResultFiles): %/testResult.txt : %/$(testFile)
+	@echo @^
 	$(PYTHON) %/$(testFile) >> %/teStResult.txt
 	
 pre:
