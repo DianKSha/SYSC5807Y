@@ -17,7 +17,7 @@ plaintextLengthBytes = bytearray([0,0,0,26])  # 16 byte
 plaintextLength = 26 # bytes
 repetitionNum = math.ceil(plaintextLength/16)
 
-associatedData = PadByteArray(bytearray([1,2,3]*12))
+associatedData =  padByteArray(bytearray([1,2,3]*12))
 associatedDataLengthBytes =  bytearray([0,0,0,36]) # four bytes
 associatedDataLength = 36
 
@@ -46,7 +46,7 @@ print(target.simpleserial_read('r',  20))
 target.simpleserial_write('q',plaintextLengthBytes)
 print(target.simpleserial_read('r',4))
 for i in range(repetitionNum):
-    target.simpleserial_write('p',plaintext)
+    target.simpleserial_write('p',plaintext[i*16:(i+1)*16)
     print(target.simpleserial_read('r',  16))
 
 res_ciphertext = ''
@@ -71,7 +71,7 @@ ciphertext = PadByteArray(bytearray(res_ciphertext, 'ascii'))
 target.simpleserial_write('b', associatedDataLengthBytes)
 print(target.simpleserial_read('r',  4))
 for t in range(math.ceil(associatedDataLength/16)):
-    target.simpleserial_write('a',associatedData)
+    target.simpleserial_write('a',associatedData[t*16, (t+1)*16])
     print(target.simpleserial_read('r',  16))
 
 target.simpleserial_write('n', nonce)
@@ -83,7 +83,7 @@ target.simpleserial_write('l',ciphertextLengthBytes)
 print(target.simpleserial_read('r',  4))
 for i in range(repetitionNum):
 
-    target.simpleserial_write('c', ciphertext)
+    target.simpleserial_write('c', ciphertext [i*16, (i+1)*16])
     print(target.simpleserial_read('r',  16))
 
 res_plaintext = ''
