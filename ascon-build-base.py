@@ -21,4 +21,5 @@ ffibuilder.set_source("_pi_ascon",
                       """,
                       sources=["aead.c"],
                       libraries=[])
+print("================BUILD LIBRARY==================")
 ffibuilder.compile(verbose=True)

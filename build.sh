@@ -18,13 +18,17 @@ then
     exit(1)
 fi
 
+echo "find variants ..."
 for variant in $BASE_DIR/*;
 do
-    echo "find variants ..."
     if [[ ! -d $variant ]];
     then
         continue;
     fi
+    echo "==================START============="
+    
+    echo "==============FILE:$variant========="
+
     # copy the base build py to each variant
     cp $ASCON_BUILD_BASE_PY $variant/$ASCON_BUILD_PY
     cp $ASCON_TEST_BASE_PY $variant/$ASCON_TEST_PY

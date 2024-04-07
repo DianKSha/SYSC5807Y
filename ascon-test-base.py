@@ -53,6 +53,8 @@ with open("KAT.txt","r") as kat:
 
 
 
+print("======================TEST======================")
+
 # test encryption
 
 for test in tests:
