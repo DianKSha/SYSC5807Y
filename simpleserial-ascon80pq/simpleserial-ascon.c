@@ -110,7 +110,7 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
     for(int i = 0; i<4; i++){
         plaintextLength = 256 * plaintextLength + *(data+i);
     }
-    free(plaintext);
+    if (plaintext!=NULL) free(plaintext);
     plaintext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
     plaintextCounter = 0;
     // also set the cipher text 
@@ -201,7 +201,7 @@ uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
         
         associatedDataLength = 256*associatedDataLength + *(data+i);
     }
-    free(associatedData);
+    if(associatedData!=NULL) free(associatedData);
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
     associatedDataCounter=0;
 
