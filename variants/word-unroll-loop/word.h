@@ -21,14 +21,14 @@ typedef uint64_t uint64_t;
 // unroll the loop
 static inline uint64_t LOAD8BYTES(const uint8_t* bytes){
     uint64_t x = 0;
-    x |= bytes[0]; x=x<<8;
-    x |= bytes[1]; x=x<<8;
-    x |= bytes[2]; x=x<<8;
-    x |= bytes[3]; x=x<<8;
-    x |= bytes[4]; x=x<<8;
-    x |= bytes[5]; x=x<<8;
-    x |= bytes[6]; x=x<<8;
-    x |= bytes[7];
+    x |= (uint64_t)bytes[0]; x=x<<8;
+    x |= (uint64_t)bytes[1]; x=x<<8;
+    x |= (uint64_t)bytes[2]; x=x<<8;
+    x |= (uint64_t)bytes[3]; x=x<<8;
+    x |= (uint64_t)bytes[4]; x=x<<8;
+    x |= (uint64_t)bytes[5]; x=x<<8;
+    x |= (uint64_t)bytes[6]; x=x<<8;
+    x |= (uint64_t)bytes[7];
     return x;
 }
 // =====optimization======
@@ -37,10 +37,10 @@ static inline uint64_t LOAD8BYTES(const uint8_t* bytes){
 // load 0000xxxx
 static inline uint64_t  LOADLOWER4BYTES(const uint8_t* bytes){
     uint64_t x = 0;
-    x |= bytes[0]; x=x<<8;
-    x |= bytes[1]; x=x<<8;
-    x |= bytes[2]; x=x<<8;
-    x |= bytes[3];
+    x |= (uint64_t)bytes[0]; x=x<<8;
+    x |= (uint64_t)bytes[1]; x=x<<8;
+    x |= (uint64_t)bytes[2]; x=x<<8;
+    x |= (uint64_t)bytes[3];
     return x;
 }
 // =====optimization======
@@ -49,10 +49,10 @@ static inline uint64_t  LOADLOWER4BYTES(const uint8_t* bytes){
 // load xxxx0000
 static inline uint64_t  LOADHIGHER4BYTES(const uint8_t* bytes){
     uint64_t x = 0;
-    x |= bytes[0]; x=x<<8; //0000_000x
-    x |= bytes[1]; x=x<<8; //0000_00xx
-    x |= bytes[2]; x=x<<8; //0000_0xxx
-    x |= bytes[3]; //0000_xxxx
+    x |= (uint64_t)bytes[0]; x=x<<8; //0000_000x
+    x |= (uint64_t)bytes[1]; x=x<<8; //0000_00xx
+    x |= (uint64_t)bytes[2]; x=x<<8; //0000_0xxx
+    x |= (uint64_t)bytes[3]; //0000_xxxx
     x=x<<32;//0000_xxxx->xxxx_0000
     return x;
 }
@@ -61,14 +61,14 @@ static inline uint64_t  LOADHIGHER4BYTES(const uint8_t* bytes){
 // =====optimization======
 // store 8 bytes into bytes
 static inline void STORE8BYTES(uint8_t* bytes, uint64_t x) {
-  bytes[0] = x | 0xFF00000000000000ULL;
-  bytes[1] = x | 0x00FF000000000000ULL;
-  bytes[2] = x | 0x0000FF0000000000ULL;
-  bytes[3] = x | 0x000000FF00000000ULL;
-  bytes[4] = x | 0x00000000FF000000ULL;
-  bytes[5] = x | 0x0000000000FF0000ULL;
-  bytes[6] = x | 0x000000000000FF00ULL;
-  bytes[7] = x | 0x00000000000000FFULL;
+  bytes[7] = (uint8_t)x; x=x>>8;
+  bytes[6] = (uint8_t)x; x=x>>8;
+  bytes[5] = (uint8_t)x; x=x>>8;
+  bytes[4] = (uint8_t)x; x=x>>8;
+  bytes[3] = (uint8_t)x; x=x>>8;
+  bytes[2] = (uint8_t)x; x=x>>8;
+  bytes[1] = (uint8_t)x; x=x>>8;
+  bytes[0] = (uint8_t)x; 
 }
 
 
