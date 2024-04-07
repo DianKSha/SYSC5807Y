@@ -14,19 +14,3 @@ int crypto_aead_decrypt(unsigned char* m, unsigned long long* mlen,
                         unsigned long long adlen, const unsigned char* npub,
                         const unsigned char* k) ;
 """)
-
-ffibuilder.set_source("_pi_ascon",
-                      """
-                      #include "crypto_aead.h"
-                      """,
-
-                      sources=["ascon-ref/aead.c"],
-
-
-                      include_dirs=["./ascon-ref"],
-
-                      library_dirs=["./ascon-ref"],
-                      libraries=[])
-if __name__ == "__main__":
-    ffibuilder.compile(verbose=True)
-
