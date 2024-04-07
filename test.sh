@@ -26,6 +26,14 @@ do
     
     echo "==============FILE:$variant========="
 
+        
+    if [[ $variant =~ '.*/#.*' ]];
+    then
+        echo "skip variant $variant"
+        continue;
+    fi
+
+
     # copy the base build py to each variant
     CURRENT_DIR=$(pwd)
     

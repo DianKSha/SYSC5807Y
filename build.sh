@@ -28,6 +28,12 @@ do
     echo "==================START============="
     
     echo "==============FILE:$variant========="
+    
+    if [[ $variant =~ '.*/#.*' ]];
+    then
+        echo "skip variant $variant"
+        continue;
+    fi
 
     # copy the base build py to each variant
     cp $ASCON_BUILD_BASE_PY $variant/$ASCON_BUILD_PY
