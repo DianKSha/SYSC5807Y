@@ -4,7 +4,7 @@ import math
 
 def padByteArray(arr):
     # append 0 to arr to make it a multiple of sixteen
-    if len(arr%16) == 0:
+    if (len(arr)%16) == 0:
         return arr
     arr += bytearray([0])*(16-len(arr)%16)
     return arr
