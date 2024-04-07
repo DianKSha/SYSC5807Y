@@ -61,9 +61,14 @@ static inline uint64_t  LOADHIGHER4BYTES(const uint8_t* bytes){
 // =====optimization======
 // store 8 bytes into bytes
 static inline void STORE8BYTES(uint8_t* bytes, uint64_t x) {
-  int i;
-  __promise(n==8);
-  for (i = 0; i < n; ++i) bytes[i] = GETBYTE(x, i);
+  bytes[0] = x | 0xFF00000000000000ULL;
+  bytes[1] = x | 0x00FF000000000000ULL;
+  bytes[2] = x | 0x0000FF0000000000ULL;
+  bytes[3] = x | 0x000000FF00000000ULL;
+  bytes[4] = x | 0x00000000FF000000ULL;
+  bytes[5] = x | 0x0000000000FF0000ULL;
+  bytes[6] = x | 0x000000000000FF00ULL;
+  bytes[7] = x | 0x00000000000000FFULL;
 }
 
 
