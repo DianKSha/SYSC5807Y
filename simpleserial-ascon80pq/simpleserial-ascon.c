@@ -34,6 +34,7 @@
 #define NONCE_BYTES 16
 #define KEY_BYTES 20
 
+static unsigned int errorInt = 4008636142;
 static int dataLength = 16; // since the p and ad can be arbitrary long, set the data length first, defualt 16 
 
 static unsigned char key[ KEY_BYTES] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}; // 20 bytes key for ascon 80pq
@@ -112,7 +113,7 @@ uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
     }
     if (plaintext!=NULL){ free(plaintext); plaintext=NULL;}
     plaintext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
-    if(plaintext==NULL) return -1;
+    if(plaintext==NULL){simpleserial_put('r',4,&errorInt);return -1;}
     plaintextCounter = 0;
     // also set the cipher text 
     
@@ -170,10 +171,12 @@ uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
     }
     plaintextLength = ciphertextLength - NONCE_BYTES;
     plaintext = (unsigned char*)malloc(plaintextLength * sizeof(unsigned char));
-    if(plaintext==NULL){return -1;}
+    if(plaintext==NULL){simpleserial_put('r',4,&errorInt);return -1;}
     plaintextCounter = -1;
     simpleserial_put('r', 4, (void*)&ciphertextLength);
 
+    // 
+    //
     return 0x00;
 }
 
@@ -208,7 +211,7 @@ uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
     }
     if(associatedData!=NULL) {free(associatedData);associatedData=NULL;}
     associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
-    if (associatedData == NULL) return -1;
+    if (associatedData == NULL){simpleserial_put('r',4,&errorInt);return -1;}
     associatedDataCounter=0;
     simpleserial_put('r', 4, (void*)&associatedDataLength);
     return 0x00;

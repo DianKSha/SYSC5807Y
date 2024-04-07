@@ -77,8 +77,6 @@ repetitionNum = math.ceil(plaintextLength/16)
 associatedData =  padByteArray(bytearray([1,2,3]*12))
 associatedDataLengthBytes =  bytearray([0,0,0,36]) # four bytes
 associatedDataLength = 36
-
-ciphertext = None
 ciphertextLength = plaintextLength+16 # plus tag
 ciphertextLengthBytes =  bytearray([0,0,0,42])
 
