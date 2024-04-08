@@ -9,7 +9,7 @@ static inline __attribute__((always_inline)) uint64_t ROR(uint64_t x, int n) {
   return x >> n | x << (-n & 63);
 }
 
-static inline __attribute__((always_inline)) void ROUND(ascon_state_t* s, uint8_t C) {
+static void ROUND(ascon_state_t* s, uint8_t C) {
   ascon_state_t t;
   /* addition of round constant */
   s->x[2] ^= C;
