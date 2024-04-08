@@ -8,7 +8,7 @@
 #include "printstate.h"
 #include "round.h"
 
-__forceinline static void P12(ascon_state_t* s) {
+static inline __attribute__((always_inline)) void P12(ascon_state_t* s) {
   ROUND(s, 0xf0);
   ROUND(s, 0xe1);
   ROUND(s, 0xd2);
@@ -23,7 +23,7 @@ __forceinline static void P12(ascon_state_t* s) {
   ROUND(s, 0x4b);
 }
 
-__forceinline static void P8(ascon_state_t* s) {
+static inline __attribute__((always_inline)) void P8(ascon_state_t* s) {
   ROUND(s, 0xb4);
   ROUND(s, 0xa5);
   ROUND(s, 0x96);
@@ -34,7 +34,7 @@ __forceinline static void P8(ascon_state_t* s) {
   ROUND(s, 0x4b);
 }
 
-__forceinline static void P6(ascon_state_t* s) {
+static inline __attribute__((always_inline)) void P6(ascon_state_t* s) {
   ROUND(s, 0x96);
   ROUND(s, 0x87);
   ROUND(s, 0x78);

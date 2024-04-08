@@ -16,7 +16,7 @@ typedef uint64_t uint64_t;
 #define PAD(i) SETBYTE(0x80, i)
 
 /* load bytes into 64-bit Ascon word */
-__forceinline static uint64_t LOADBYTES(const uint8_t* bytes, int n) {
+static inline __attribute__((always_inline)) uint64_t LOADBYTES(const uint8_t* bytes, int n) {
   int i;
   uint64_t x = 0;
   for (i = 0; i < n; ++i) x |= SETBYTE(bytes[i], i);
@@ -24,13 +24,13 @@ __forceinline static uint64_t LOADBYTES(const uint8_t* bytes, int n) {
 }
 
 /* store bytes from 64-bit Ascon word */
-__forceinline static void STOREBYTES(uint8_t* bytes, uint64_t x, int n) {
+static inline __attribute__((always_inline)) void STOREBYTES(uint8_t* bytes, uint64_t x, int n) {
   int i;
   for (i = 0; i < n; ++i) bytes[i] = GETBYTE(x, i);
 }
 
 /* clear bytes in 64-bit Ascon word */
-__forceinline static uint64_t CLEARBYTES(uint64_t x, int n) {
+static inline __attribute__((always_inline)) uint64_t CLEARBYTES(uint64_t x, int n) {
   int i;
   for (i = 0; i < n; ++i) x &= ~SETBYTE(0xff, i);
   return x;
