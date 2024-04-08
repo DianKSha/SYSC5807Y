@@ -31,43 +31,30 @@
 #include "word.h"
 #include "aead.c"
 
+// all in bytes
 #define NONCE_BYTES 16
 #define KEY_BYTES 20
-
-static   uint32_t errorInt = 4008636142;
-static int dataLength = 16; // since the p and ad can be arbitrary long, set the data length first, defualt 16 
+#define PLAINTEXT_BYTES 16
+#define CIPHERTEXT_BYTES 32
+#define TAG_BYTES 16
+#define AD_BYTES 16
 
 static unsigned char key[ KEY_BYTES] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19}; // 20 bytes key for ascon 80pq
 
-static unsigned char* associatedData;// moved to main = (unsigned char*)malloc(16*sizeof(unsigned char));
-
-static unsigned char* plaintext;// moved to main = (unsigned char*)malloc(16*sizeof(unsigned char));
-
-static unsigned char* ciphertext;//  = (unsigned char*)malloc((16+16)*sizeof(unsigned char)); // size(plaintext) + size(nonce)
-
-
-static uint32_t ciphertextLength = 16; // default 16 bits
-static uint32_t plaintextLength = 16; // default 16     bytes
-                                           //
-static int ciphertextCounter= 0;
-static int plaintextCounter = 0;
-
-static uint32_t associatedDataLength = 16; // default 16 bytes
-
-static int associatedDataCounter = 0; // 
+static unsigned char associatedData[AD_BYTES] = {0};
+static unsigned char plaintext[PLAINTEXT_BYTES] = {0};
+static unsigned char ciphertext[CIPHERTEXT_BYTES] = {0};
 
 static unsigned char nonce[NONCE_BYTES] = {0};
 
-unsigned char * new_ciphertext(uint32_t len);
+// hanlder
 uint8_t  set_key(uint8_t* k, uint8_t len)
 {
 	// Load key here
     for (int i = 0; i<KEY_BYTES; i++){
         key[i] = *(k+i);
     }
-    
-    
-    simpleserial_put('r',  20 ,key);
+    simpleserial_put('r',  KEY_BTYES,key);
     return 0x00;
 }
 uint8_t set_nonce(uint8_t* data, uint8_t len)
@@ -76,194 +63,70 @@ uint8_t set_nonce(uint8_t* data, uint8_t len)
     for (int i = 0; i<NONCE_BYTES; i++){
         nonce[i] = *( data+i);
     }
-    simpleserial_put('r', 16, nonce);
+    simpleserial_put('r', NONCE_BYTES , nonce);
 	return 0x00;
 }
 
 uint8_t set_plaintext(uint8_t * data, uint8_t len){
     // set the plaintext 
-    
-    if(plaintextCounter == (plaintextLength+15)/16)
-        return 0; // error, trying to read data when no data should be available
-    // read 16 bytes for a time
-    int restBytes = plaintextLength - 16*plaintextCounter;
-    if(restBytes>=16){
-        for(int i = 0; i<16; i++){
-            plaintext[i+plaintextCounter*16] = *(data+i);
-        }
-    }else{
-        for(int i = 0; i<restBytes; i++){
-
-            plaintext[i+plaintextCounter*16] = *(data+i);
-        }
+    for (int i = 0; i<PLAINTEXT_BYTES; i++){
+        plaintext[i] = *(data+i);
     }
-
-    simpleserial_put('r', 16, (void*)plaintext+16*plaintextCounter);
-    plaintextCounter++;
-    return   0x00; 
+    simpleserial_put('r', PLAINTEXT_BYTES, plaintext);
+   return   0x00; 
 }
-
-uint8_t set_plaintext_length(uint8_t * data, uint8_t len){
-    // set the plaintext length, defualt 16
-    // this clears the existing array of plaintext and redeclare one
-
-    plaintextLength = 0;
-    for(int i = 0; i<4; i++){
-        plaintextLength = 256 * plaintextLength + *(data+i);
-    }
-    if (plaintext!=NULL){ free(plaintext); plaintext=NULL;}
-    plaintext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
-    if(plaintext==NULL){simpleserial_put('r',4,&errorInt);return -1;}
-    plaintextCounter = 0;
-    // also set the cipher text 
-    
-    if(ciphertext!=NULL){ free(ciphertext);ciphertext=NULL;}
-    ciphertext = new_ciphertext(plaintextLength);
-    ciphertextLength = plaintextLength;
-    ciphertextCounter =   -1;
-
-    simpleserial_put('r',4,(void*)&plaintextLength);
-    return 0x00;
-}
-
 uint8_t set_ciphertext(uint8_t * data, uint8_t len){
     // set the ciphertext , should include the tag as the last 16 bytes
     
-    if(ciphertextCounter == (ciphertextCounter+15)/16)
-        return -1; // error, trying to read data when no data should be available
-    // read 16 bytes for a time
-    int restBytes = ciphertextLength  - 16*ciphertextCounter;
-    if(restBytes>=16){
-
-        for(int i = 0; i<16; i++){
-            ciphertext[i+ciphertextCounter*16] = *(data+i);
-        }
-    }else{
-        for(int i = 0; i<restBytes; i++){
-
-            ciphertext[i+ciphertextCounter*16] = *(data+i);
-        }
+    for(int i = 0; i<CIPHERTEXT_BYTES; i++){
+        ciphertext[i] = *(data+i);
     }
-    simpleserial_put('r',16,(void*)ciphertext+ciphertextCounter*16);
-    ciphertextCounter++;
 
-
+    simpleserial_put('r', CIPHERTEXT_BYTES, ciphertext);
     return   0x00; 
-}
-
-uint8_t set_ciphertext_length(uint8_t * data, uint8_t len){
-    // set the plaintext length, defualt 16
-    // this clears the existing array of plaintext and redeclare one
-
-    ciphertextLength = 0;
-    for(int i = 0; i<4; i++){
-        ciphertextLength = 16*ciphertextLength + *(data+i);
-    }
-    free(ciphertext);
-    ciphertext = (unsigned char*)malloc(plaintextLength*sizeof(unsigned char));
-
-    ciphertextCounter= 0;
-    // also set the plaintext
-    
-    if(plaintext!=NULL)  {
-        free(plaintext);
-        plaintext=NULL;
-    }
-    plaintextLength = ciphertextLength - NONCE_BYTES;
-    plaintext = (unsigned char*)malloc(plaintextLength * sizeof(unsigned char));
-    if(plaintext==NULL){simpleserial_put('r',4,&errorInt);return -1;}
-    plaintextCounter = -1;
-    simpleserial_put('r', 4, (void*)&ciphertextLength);
-
-    // 
-    //
-    return 0x00;
 }
 
 
 uint8_t set_associated_data(uint8_t * data, uint8_t len){
-    // same as plaintext 
     
-    if(associatedDataCounter== (associatedDataLength+15)/16)
-        return -1; // error, trying to read data when no data should be available
-    // read bytes, 16 a time
-    int restBytes = associatedDataLength-16*associatedDataCounter;
-    if (restBytes>=16){
-        for(int i = 0; i<16; i++){
-            associatedData[i+associatedDataCounter*16] = *(data+i);
-        }
-    }else{
-        for(int i = 0; i<restBytes; i++){
-            associatedData[i+associatedDataCounter*16] = *(data+i);
-        }
+    
+    for(int i = 0; i<AD_BYTES: i++){
+        associatedData[i] = *(data+i);
     }
-    simpleserial_put('r',16, (uint8_t*)associatedData+16*associatedDataCounter);
-    associatedDataCounter++;
+    simpleserial_put('r', AD_BYTES, associatedData);
+
     return   0x00; 
 }
 
-uint8_t set_associated_data_length(uint8_t * data, uint8_t len){
-    // same as plaintext
-    associatedDataLength =  0 ;
-    for(int i = 0; i<4; i++){
-        
-        associatedDataLength = 256*associatedDataLength + *(data+i);
-    }
-    if(associatedData!=NULL) {free(associatedData);associatedData=NULL;}
-    associatedData = (unsigned char*)malloc(associatedDataLength*sizeof(unsigned char));
-    if (associatedData == NULL){simpleserial_put('r',4,&errorInt);return -1;}
-    associatedDataCounter=0;
-    simpleserial_put('r', 4, (void*)&associatedDataLength);
-    return 0x00;
-}
-
-unsigned char* new_ciphertext( uint32_t len){
-    return (unsigned char*)malloc(len*sizeof(unsigned char));
-}
-void free_cipher_text(unsigned char * ciphertext){
-    free(ciphertext);
-}
 
 void encrypt(){
     unsigned long long clen;
-    crypto_aead_encrypt(ciphertext, &clen, plaintext, plaintextLength, associatedData, associatedDataLength, (void*)0, nonce, key);
+    crypto_aead_encrypt(ciphertext, &clen, plaintext, PLAINTEXT_BYTES, associatedData, AD_BTYES, (void*)0, nonce, key);
 }
 
 int decrypt(){
     
     unsigned long long plen;
     return 
-    crypto_aead_decrypt(plaintext, &plen, (void*)0, ciphertext, ciphertextLength+NONCE_BYTES, associatedData, associatedDataLength,nonce, key);
+    crypto_aead_decrypt(plaintext, &plen, (void*)0, ciphertext, CIPHERTEXT_BYTES, associatedData, AD_BYTES,nonce, key);
 
 }
 
 uint8_t get_encryption(uint8_t* data, uint8_t len)
 {
 
-	/**********************************
-	* Start user-specific code here. */
-    if(ciphertextCounter==-1){ // -1 indicates encrypt again
-        trigger_high();
-        encrypt();
-        trigger_low();
-    }
-    ciphertextCounter = (ciphertextCounter+1)%((ciphertextLength+NONCE_BYTES+15)/16); // the last 16 bytes is the tag
-
-	/* End user-specific code here. *
-	********************************/
-	simpleserial_put('r', 16, (uint8_t*)ciphertext+ciphertextCounter*16);
+    trigger_high();
+    encrypt();
+    trigger_low();
+    simpleserial_put('r', CIPHERTEXT_BYTES, ciphertext);
 	return 0x00;
 }
 uint8_t get_decryption(uint8_t* data, uint8_t len){
     
-    // return plaintext 
-    if(plaintextCounter==-1){
-        trigger_high();
-        decrypt();
-        trigger_low();
-    }
-    plaintextCounter = (plaintextCounter+1)%((plaintextLength+15)/16);
-    simpleserial_put('r', 16, (uint8_t*)plaintext+plaintextCounter*16);
+    trigger_high();
+    decrypt();
+    trigger_low();
+    simpleserial_put('r', PLAINTEXT_BYTES, plaintext);
     return 0x00;
 
 }
@@ -280,14 +143,7 @@ int main(void)
     platform_init();
 	init_uart();
 	trigger_setup();
-    associatedData = (unsigned char*)malloc(16*sizeof(unsigned char));
-
-    plaintext = (unsigned char*)malloc(16*sizeof(unsigned char));
-
-    ciphertext = (unsigned char*)malloc((16+16)*sizeof(unsigned char)); // size(plaintext) + size(nonce)
-
-
- 	/* Uncomment this to get a HELLO message for debug */
+    /* Uncomment this to get a HELLO message for debug */
 	/*
 	putch('h');
 	putch('e');
@@ -312,16 +168,13 @@ int main(void)
     // addcmd(command_char, maximum_len, call_back function)
     // maximum len: up to 64 bytes 
 	simpleserial_addcmd('x', 0, reset); // reset
-	simpleserial_addcmd('k', 20,  set_key); // set key, 20 bytes
-    simpleserial_addcmd('a', 16, set_associated_data); // set associated data
-    simpleserial_addcmd('b', 4, set_associated_data_length);// in bits
+	simpleserial_addcmd('k', KEY_BYTES,  set_key); // set key, 20 bytes
+    simpleserial_addcmd('a', AD_BYTES, set_associated_data); // set associated data
     simpleserial_addcmd('n', NONCE_BYTES, set_nonce) ;
-    simpleserial_addcmd('p', 16, set_plaintext);
-    simpleserial_addcmd('q', 4, set_plaintext_length); // in bits
-    simpleserial_addcmd('e', 0, get_encryption); // get the encrypted plaintext along with verification tag, 
-    simpleserial_addcmd('d', 0, get_decryption); // get the decrypted plaintext
-    simpleserial_addcmd('c', 16, set_ciphertext);
-    simpleserial_addcmd('l', 4, set_ciphertext_length); // in bits
+    simpleserial_addcmd('p', PLAINTEXT_BYTES, set_plaintext);
+    simpleserial_addcmd('e', 16, get_encryption); // get the encrypted plaintext along with verification tag, 
+    simpleserial_addcmd('d', 16, get_decryption); // get the decrypted plaintext
+    simpleserial_addcmd('c', CIPHERTEXT_BYTES, set_ciphertext);
 
 	while(1)
 		simpleserial_get();

@@ -1,2 +1,7 @@
 .DS_STORE
-.out/
+out/
+**/*.hex
+**/*.o
+**/*.so
+
+
