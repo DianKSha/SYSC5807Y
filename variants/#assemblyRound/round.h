@@ -6,7 +6,7 @@
 #include "printstate.h"
 #include "word.h"
 
-__forceinline void ROUND_LOOP(ascon_state_t* s, uint32_t C) {
+inline __attribute__((always_inline)) void ROUND_LOOP(ascon_state_t* s, uint32_t C) {
   uint32_t tmp0, tmp1;
   __asm__ __volatile__(
       "@.syntax_unified\n\t"
@@ -179,7 +179,7 @@ __forceinline void ROUND_LOOP(ascon_state_t* s, uint32_t C) {
 }
 
 
-__forceinline void ROUND(ascon_state_t* s, uint32_t C) {
+inline __attribute__((always_inline)) void ROUND(ascon_state_t* s, uint32_t C) {
   uint32_t tmp0, tmp1, tmp2;
   __asm__ __volatile__(
       "@.syntax_unified\n\t"
@@ -345,6 +345,6 @@ __forceinline void ROUND(ascon_state_t* s, uint32_t C) {
   printstate(" round output", s);
 }
 
-__forceinline void PROUNDS(ascon_state_t* s, int nr) { ROUND_LOOP(s, START(nr)); }
+inline __attribute__((always_inline)) void PROUNDS(ascon_state_t* s, int nr) { ROUND_LOOP(s, START(nr)); }
 
 #endif /* ROUND_H_ */
