@@ -106,7 +106,7 @@ for i in range(nIteration):
     target.simpleserial_write('c', ciphertext)
     print("ciphertext sent   back:")
     print(target.simpleserial_read('r',ciphertextLength))
-    print(f"real plaintext :{ciphertext}")
+    print(f"real ciphertext :{ciphertext}")
     
     scope.arm() # enable capturing
     target.simpleserial_write('d', dummy) # decrypt
@@ -121,6 +121,10 @@ for i in range(nIteration):
     res_plaintext= target.simpleserial_read('r',plaintextLength)
 
     decrypted_plaintext_array.append(res_plaintext)
+    print("decrypted plaintext:")
+    print(res_plaintext)
+    print("real plaintext:")
+    print(plaintext)
     
     time.sleep ( sleepingTime)
 
