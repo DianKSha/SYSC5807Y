@@ -54,7 +54,7 @@ uint8_t  set_key(uint8_t* k, uint8_t len)
     for (int i = 0; i<KEY_BYTES; i++){
         key[i] = *(k+i);
     }
-    simpleserial_put('r',  KEY_BTYES,key);
+    simpleserial_put('r',  KEY_BYTES,key);
     return 0x00;
 }
 uint8_t set_nonce(uint8_t* data, uint8_t len)
@@ -90,7 +90,7 @@ uint8_t set_ciphertext(uint8_t * data, uint8_t len){
 uint8_t set_associated_data(uint8_t * data, uint8_t len){
     
     
-    for(int i = 0; i<AD_BYTES: i++){
+    for (int i = 0; i < AD_BYTES; i++) {
         associatedData[i] = *(data+i);
     }
     simpleserial_put('r', AD_BYTES, associatedData);
@@ -101,7 +101,7 @@ uint8_t set_associated_data(uint8_t * data, uint8_t len){
 
 void encrypt(){
     unsigned long long clen;
-    crypto_aead_encrypt(ciphertext, &clen, plaintext, PLAINTEXT_BYTES, associatedData, AD_BTYES, (void*)0, nonce, key);
+    crypto_aead_encrypt(ciphertext, &clen, plaintext, PLAINTEXT_BYTES, associatedData, AD_BYTES, (void*)0, nonce, key);
 }
 
 int decrypt(){
