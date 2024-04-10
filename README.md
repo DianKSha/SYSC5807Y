@@ -27,5 +27,13 @@ Copy each variant to Chipwhisperer's corresponding location. It needs chipwhispe
 
 
 
+### References
+
+The code are edited based on the following two repo:
+
+[ASCON-C] https://github.com/ascon/ascon-c : the ascon implementation by authors (of ASCON)
+
+[Hardware programming] https://github.com/newaetech/chipwhisperer : the chipwhisperer 
+
 
 
